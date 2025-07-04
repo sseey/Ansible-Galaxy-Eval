@@ -15,14 +15,6 @@
   become: true
   when: root_pass_check.rc == 0 and ansible_os_family == "Debian"
 
-- name: Configurer le mot de passe root MariaDB (Debian/Ubuntu)
-  mysql_user:
-    login_unix_socket: /var/run/mysqld/mysqld.sock
-    user: root
-    password: "{{ wp_db_root_password }}"
-    host: localhost
-  when: ansible_os_family == "Debian"
-
 - name: Configurer le mot de passe root MariaDB (Rocky Linux)
   mysql_user:
     login_unix_socket: /run/mysqld/mysqld.sock
