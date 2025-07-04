@@ -1,0 +1,29 @@
+---
+- name: Download WordPress
+  get_url:
+    url: "{{ wp_download_url }}"
+    dest: /tmp/wordpress.tar.gz
+    mode: '0644'
+
+- name: Créer le répertoire WordPress si nécessaire
+  file:
+    path: "{{ wp_site_path }}"
+    state: directory
+    owner: "{{ (ansible_os_family == 'Debian') | ternary('www-data','apache') }}"
+    group: "{{ (ansible_os_family == 'Debian') | ternary('www-data','apache') }}"
+    mode: '0755'
+
+- name: Unarchive WordPress
+  unarchive:
+    src: /tmp/wordpress.tar.gz
+    dest: "{{ wp_site_path }}"
+    remote_src: yes
+    extra_opts: [--strip-components=1]
+
+- name: Set permissions
+  file:
+    path: "{{ wp_site_path }}"
+    recurse: yes
+    owner: "{{ (ansible_os_family == 'Debian') | ternary('www-data','apache') }}"
+    group: "{{ (ansible_os_family == 'Debian') | ternary('www-data','apache') }}"
+    mode: '0755'
